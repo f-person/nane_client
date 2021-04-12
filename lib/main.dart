@@ -6,7 +6,7 @@ import 'providers/chat.dart';
 import 'providers/settings.dart';
 import 'providers/user.dart';
 import 'screens/auth/auth.dart';
-import 'screens/conversations/conversations.dart';
+import 'screens/rooms/rooms.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
             primaryColor: AppColors.primary,
             accentColor: AppColors.accent,
           ),
-          home: user == null ? AuthScreen() : ConversationsScreen(),
+          home: user == null ? AuthScreen() : RoomsScreen(),
         );
       },
     );
