@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:nane_client/constants/storage_keys.dart';
@@ -8,16 +7,11 @@ import 'package:nane_client/models/data/user.dart';
 import 'package:nane_client/models/provider.dart';
 
 class UserProvider extends ProviderModel with ChangeNotifier {
-  UserProvider({User? user, Dio? dio}) {
-    _user = user;
-    this.dio = dio;
-
-    if (_user == null) {
-      _readUser().then((user) {
-        _user = user;
-        notifyListeners();
-      });
-    }
+  UserProvider() {
+    _readUser().then((user) {
+      _user = user;
+      notifyListeners();
+    });
   }
 
   User? _user;
