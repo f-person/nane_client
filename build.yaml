@@ -4,6 +4,5 @@ targets:
       json_serializable:
         options:
           explicit_to_json: true
-          include_if_null: false
-          nullable: true
           any_map: true
+          field_rename: snake
