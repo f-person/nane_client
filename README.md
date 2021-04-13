@@ -1,16 +1,17 @@
 # nane_client
+Игрушечный клиент для игрушечного чата с игрушечным сервером. 
 
-A new Flutter project.
+---
 
-## Getting Started
+### Android сборка
+Скачать APK можно по [этой](https://github.com/f-person/nane_client/releases/download/v1.0/app-release.apk) ссылке.
 
-This project is a starting point for a Flutter application.
+### Запуск с исходников
+Нужна свежая версия Flutter из ветки `stable` (например Flutter 2.0.4.).
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+git clone https://github.com/f-person/nane_client
+cd nane_client
+flutter packages get
+flutter run
+```
