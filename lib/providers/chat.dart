@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -35,14 +36,19 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
   Future<void> closeConnection() => _channel.sink.close();
 
   Future<void> fetchRoomMessages(Room room) async {
-    final response = await dio.get('/rooms/${room.name}/history');
-    final result = GetRoomMessagesResponse.fromJson(response.data as Map);
-    _messages[room.name] = result.result;
+    try {
+      final response = await dio.get('/rooms/${room.name}/history');
+      final result = GetRoomMessagesResponse.fromJson(response.data as Map);
+      _messages[room.name] = result.result;
+    } on DioError catch (error) {
+      if (error.response?.statusCode == 404) {
+        _messages[room.name] = [];
+      }
+    }
     notifyListeners();
   }
 
   Future<void> fetchRooms() async {
-    print('fetchRooms ${DateTime.now()}');
     final response = await dio.get('/rooms');
     final result = GetRoomsResponse.fromJson(response.data as Map);
     _rooms = result.result;
@@ -85,11 +91,12 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
       }
 
       if (_messages[message.room] != null) {
-        print('if ${DateTime.now()}');
         _messages[message.room]!.add(message);
         notifyListeners();
       } else if (index == -1) {
-        print('else if ${DateTime.now()}');
+        final room = Room(name: message.room, lastMessage: message);
+        _rooms.add(room);
+        notifyListeners();
       }
     }, onDone: _connect);
   }

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:nane_client/providers/chat.dart';
 import 'package:nane_client/providers/user.dart';
 
+import 'widgets/fab.dart';
 import 'widgets/room_tile.dart';
 
 class RoomsScreen extends HookWidget {
@@ -50,9 +51,11 @@ class RoomsScreen extends HookWidget {
           icon: Icon(Icons.logout),
           onPressed: () {
             context.read<UserProvider>().setUser(null);
+            context.read<ChatProvider>().closeConnection();
           },
         ),
       ]),
+      floatingActionButton: RoomsFloatingActionButton(),
       body: buildBody(),
     );
   }
