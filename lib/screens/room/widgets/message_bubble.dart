@@ -91,7 +91,7 @@ class MessageBubble extends StatelessWidget {
             right: 0.0,
             child: Row(children: [
               Text(
-                DateFormat('HH:mm').format(message.created),
+                DateFormat('HH:mm').format(message.created!),
                 style: messageTextStyle,
               ),
             ]),

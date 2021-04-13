@@ -8,14 +8,14 @@ part 'message.g.dart';
 class Message {
   const Message({
     required this.room,
-    required this.created,
     required this.text,
+    this.created,
     this.sender,
   });
 
   final String room;
-  final DateTime created;
   final String text;
+  final DateTime? created;
   final User? sender;
 
   factory Message.fromJson(Map json) => _$MessageFromJson(json);

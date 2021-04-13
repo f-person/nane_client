@@ -53,7 +53,7 @@ class RoomScreen extends HookWidget {
         const SizedBox(height: 12),
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-          child: MessageInput(),
+          child: MessageInput(room: room),
         ),
       ]),
     );

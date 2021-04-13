@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:provider/provider.dart';
+
+import 'package:nane_client/models/data/message.dart';
+import 'package:nane_client/models/data/room.dart';
+import 'package:nane_client/providers/chat.dart';
 
 class MessageInput extends HookWidget {
-  const MessageInput({Key? key}) : super(key: key);
+  const MessageInput({required this.room, Key? key}) : super(key: key);
+
+  final Room room;
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +18,14 @@ class MessageInput extends HookWidget {
 
     void sendMessage() {
       if (controller.text.trim().isEmpty) return;
+
+      final message = Message(
+        room: room.name,
+        text: controller.text,
+      );
+      controller.clear();
+      isButtonActive.value = false;
+      context.read<ChatProvider>().sendMessage(message);
     }
 
     return TextField(
