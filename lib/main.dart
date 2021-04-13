@@ -29,9 +29,7 @@ class MyApp extends StatelessWidget {
           lazy: false,
           create: (_) => ChatProvider(),
           update: (_, user, chat) {
-            return ChatProvider(
-              username: user.user?.username,
-            );
+            return chat!..updateUsername(user.user?.username);
           },
         ),
       ],

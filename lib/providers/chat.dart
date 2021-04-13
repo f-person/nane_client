@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -12,13 +13,10 @@ import 'package:nane_client/models/response/get_room_messages_response.dart';
 import 'package:nane_client/models/response/get_rooms_response.dart';
 
 class ChatProvider extends ProviderModel with ChangeNotifier {
-  ChatProvider({this.username}) {
-    _connect();
-  }
+  IOWebSocketChannel? _channel;
+  StreamSubscription<dynamic>? _subscription;
 
-  final String? username;
-
-  late IOWebSocketChannel _channel;
+  String? _username;
 
   DateTime? _lastConnectAttempt;
   List<Room> _rooms = [];
@@ -33,7 +31,11 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
     return roomsCopy;
   }
 
-  Future<void> closeConnection() => _channel.sink.close();
+  void closeConnection() {
+    _subscription?.cancel();
+    _channel?.sink.close();
+    _channel = null;
+  }
 
   Future<void> fetchRoomMessages(Room room) async {
     try {
@@ -58,12 +60,16 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
   List<Message> getMessagesByRoom(Room room) => _messages[room.name] ?? [];
 
   void sendMessage(Message message) {
-    _channel.sink.add(json.encode(message.toJson()));
+    _channel?.sink.add(json.encode(message.toJson()));
+  }
+
+  void updateUsername(String? username) {
+    closeConnection();
+    _username = username;
+    if (username != null) _connect();
   }
 
   Future<void> _connect() async {
-    if (username == null) return;
-
     final now = DateTime.now();
 
     if (_lastConnectAttempt != null &&
@@ -72,14 +78,14 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
     }
 
     _channel = IOWebSocketChannel.connect(
-      '${SettingConstants.webSocketUrl}?username=$username',
+      '${SettingConstants.webSocketUrl}?username=$_username',
       pingInterval: const Duration(seconds: 3),
     );
     _listen();
   }
 
   Future<void> _listen() async {
-    _channel.stream.listen((dynamic raw) async {
+    _subscription = _channel!.stream.listen((dynamic raw) async {
       print('_channel: $raw ${DateTime.now()}');
 
       final message = Message.fromJson(json.decode(raw as String) as Map);

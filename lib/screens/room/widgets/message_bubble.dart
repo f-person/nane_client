@@ -78,25 +78,37 @@ class MessageBubble extends StatelessWidget {
           color: bg,
           borderRadius: radius,
         ),
-        child: Stack(children: [
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: 4,
-              right: !byMe ? 26 : 46,
-            ),
-            child: SelectableText(message.text),
-          ),
-          Positioned(
-            bottom: 0.0,
-            right: 0.0,
-            child: Row(children: [
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (!byMe)
               Text(
-                DateFormat('HH:mm').format(message.created!),
-                style: messageTextStyle,
+                message.sender!.username,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            Stack(children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: 4,
+                  right: !byMe ? 26 : 46,
+                ),
+                child: SelectableText(message.text),
+              ),
+              Positioned(
+                bottom: 0.0,
+                right: 0.0,
+                child: Text(
+                  DateFormat('HH:mm').format(message.created!),
+                  style: messageTextStyle,
+                ),
               ),
             ]),
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }

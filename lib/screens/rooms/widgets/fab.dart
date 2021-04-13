@@ -14,9 +14,7 @@ class RoomsFloatingActionButton extends StatelessWidget {
       onPressed: () {
         showDialog(
           context: context,
-          builder: (_) {
-            return _EnterRoomNameDialog();
-          },
+          builder: (_) => _EnterRoomNameDialog(),
         );
       },
       child: Icon(Icons.add),
