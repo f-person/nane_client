@@ -35,6 +35,7 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
   }
 
   Future<void> fetchRooms() async {
+    print('fetchRooms ${DateTime.now()}');
     final response = await dio.get('/rooms');
     final result = GetRoomsResponse.fromJson(response.data as Map);
     _rooms = result.result;
@@ -70,11 +71,19 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
 
       final message = Message.fromJson(json.decode(raw as String) as Map);
 
-      if (_messages[message.room] == null) {
-        await fetchRooms();
-      } else {
+      final index = _rooms.indexWhere((r) => r.name == message.room);
+      if (index != -1) {
+        _rooms[index] = _rooms[index].copyWith(lastMessage: message);
+        notifyListeners();
+      }
+
+      if (_messages[message.room] != null) {
+        print('if ${DateTime.now()}');
         _messages[message.room]!.add(message);
         notifyListeners();
+      } else if (index == -1) {
+        print('else if ${DateTime.now()}');
+        await fetchRooms();
       }
     }, onDone: _connect);
   }

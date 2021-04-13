@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
           create: (_) => SettingsProvider(),
         ),
         ChangeNotifierProxyProvider<UserProvider, ChatProvider>(
+          lazy: false,
           create: (_) => ChatProvider(),
           update: (_, user, chat) {
             return ChatProvider(

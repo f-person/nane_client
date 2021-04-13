@@ -3,6 +3,22 @@
 part of 'room.dart';
 
 // **************************************************************************
+// CopyWithGenerator
+// **************************************************************************
+
+extension RoomCopyWith on Room {
+  Room copyWith({
+    Message? lastMessage,
+    String? name,
+  }) {
+    return Room(
+      lastMessage: lastMessage ?? this.lastMessage,
+      name: name ?? this.name,
+    );
+  }
+}
+
+// **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 

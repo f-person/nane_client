@@ -13,7 +13,11 @@ class RoomTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(room.name),
-      subtitle: Text(room.lastMessage?.text ?? ''),
+      subtitle: Text(
+        room.lastMessage?.text ?? '',
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
       onTap: () {
         navigateTo(context, RoomScreen(room: room));
       },
