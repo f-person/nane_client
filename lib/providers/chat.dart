@@ -23,7 +23,14 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
   List<Room> _rooms = [];
   final Map<String, List<Message>> _messages = {};
 
-  List<Room> get rooms => [..._rooms];
+  List<Room> get rooms {
+    final roomsCopy = [..._rooms];
+    roomsCopy.sort(
+      (a, b) => b.lastMessage!.created!.compareTo(a.lastMessage!.created!),
+    );
+
+    return roomsCopy;
+  }
 
   Future<void> closeConnection() => _channel.sink.close();
 
@@ -83,7 +90,6 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
         notifyListeners();
       } else if (index == -1) {
         print('else if ${DateTime.now()}');
-        await fetchRooms();
       }
     }, onDone: _connect);
   }

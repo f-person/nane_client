@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:nane_client/models/data/room.dart';
 import 'package:nane_client/screens/room/room.dart';
@@ -18,6 +19,7 @@ class RoomTile extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
+      trailing: Text(DateFormat('HH:mm').format(room.lastMessage!.created!)),
       onTap: () {
         navigateTo(context, RoomScreen(room: room));
       },

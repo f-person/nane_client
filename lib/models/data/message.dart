@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'package:nane_client/utils/json.dart';
+
 import 'user.dart';
 
 part 'message.g.dart';
@@ -15,6 +17,10 @@ class Message {
 
   final String room;
   final String text;
+  @JsonKey(
+    fromJson: dateTimeFromJson,
+    toJson: dateTimeToJson,
+  )
   final DateTime? created;
   final User? sender;
 
