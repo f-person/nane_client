@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'package:nane_client/constants/setting.dart';
 import 'package:nane_client/models/data/message.dart';
@@ -13,7 +13,7 @@ import 'package:nane_client/models/response/get_room_messages_response.dart';
 import 'package:nane_client/models/response/get_rooms_response.dart';
 
 class ChatProvider extends ProviderModel with ChangeNotifier {
-  IOWebSocketChannel? _channel;
+  WebSocketChannel? _channel;
   StreamSubscription<dynamic>? _subscription;
 
   String? _username;
@@ -73,13 +73,13 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
     final now = DateTime.now();
 
     if (_lastConnectAttempt != null &&
-        now.difference(_lastConnectAttempt!) < const Duration(seconds: 2)) {
-      await Future.delayed(const Duration(seconds: 4));
+        now.difference(_lastConnectAttempt!) <
+            const Duration(milliseconds: 100)) {
+      await Future.delayed(const Duration(milliseconds: 200));
     }
 
-    _channel = IOWebSocketChannel.connect(
-      '${SettingConstants.webSocketUrl}?username=$_username',
-      pingInterval: const Duration(seconds: 3),
+    _channel = WebSocketChannel.connect(
+      Uri.parse('${SettingConstants.webSocketUrl}?username=$_username'),
     );
     _listen();
   }
