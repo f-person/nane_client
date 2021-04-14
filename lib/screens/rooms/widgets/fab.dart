@@ -60,6 +60,7 @@ class _EnterRoomNameDialog extends HookWidget {
           ),
           ElevatedButton(
             onPressed: () {
+              Navigator.of(context).pop();
               navigateTo(
                 context,
                 RoomScreen(room: Room(name: controller.text)),

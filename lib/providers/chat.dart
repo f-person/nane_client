@@ -93,15 +93,14 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
       final index = _rooms.indexWhere((r) => r.name == message.room);
       if (index != -1) {
         _rooms[index] = _rooms[index].copyWith(lastMessage: message);
-        notifyListeners();
+      } else {
+        final room = Room(name: message.room, lastMessage: message);
+        _rooms.add(room);
       }
+      notifyListeners();
 
       if (_messages[message.room] != null) {
         _messages[message.room]!.add(message);
-        notifyListeners();
-      } else if (index == -1) {
-        final room = Room(name: message.room, lastMessage: message);
-        _rooms.add(room);
         notifyListeners();
       }
     }, onDone: _connect);
