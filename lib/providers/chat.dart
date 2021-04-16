@@ -103,6 +103,6 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
         _messages[message.room]!.add(message);
         notifyListeners();
       }
-    }, onDone: _connect);
+    }, onDone: _connect, onError: (_) => _connect());
   }
 }

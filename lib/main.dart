@@ -1,3 +1,4 @@
+import 'package:catcher/catcher.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +12,17 @@ import 'screens/rooms/rooms.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(MyApp());
+  final config = CatcherOptions(
+    DialogReportMode(),
+    [
+      EmailManualHandler(['agakaryan.arshak@gmail.com'])
+    ],
+  );
+  Catcher(
+    debugConfig: config,
+    releaseConfig: config,
+    rootWidget: MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
