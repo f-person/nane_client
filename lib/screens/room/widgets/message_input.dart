@@ -15,6 +15,7 @@ class MessageInput extends HookWidget {
   Widget build(BuildContext context) {
     final controller = useTextEditingController();
     final isButtonActive = useState<bool>(false);
+    String previousText = usePrevious<String>('') ?? '';
 
     void sendMessage() {
       if (controller.text.trim().isEmpty) return;
@@ -57,8 +58,9 @@ class MessageInput extends HookWidget {
         ),
       ),
       onChanged: (value) {
-        if (value.length < 2) {
+        if (previousText.length < 2 || value.length < 2) {
           isButtonActive.value = value.isNotEmpty;
+          previousText = value;
         }
       },
     );

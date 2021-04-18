@@ -12,15 +12,22 @@ import 'screens/rooms/rooms.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final config = CatcherOptions(
+  final debugConfig = CatcherOptions(
+    PageReportMode(),
+    [
+      EmailManualHandler(['agakaryan.arshak@gmail.com'])
+    ],
+  );
+  final releaseConfig = CatcherOptions(
     DialogReportMode(),
     [
       EmailManualHandler(['agakaryan.arshak@gmail.com'])
     ],
   );
+
   Catcher(
-    debugConfig: config,
-    releaseConfig: config,
+    debugConfig: debugConfig,
+    releaseConfig: releaseConfig,
     rootWidget: MyApp(),
   );
 }
@@ -49,6 +56,7 @@ class MyApp extends StatelessWidget {
 
         return MaterialApp(
           title: 'Nane Chat',
+          navigatorKey: Catcher.navigatorKey,
           theme: ThemeData(
             primaryColor: AppColors.primary,
             accentColor: AppColors.accent,
