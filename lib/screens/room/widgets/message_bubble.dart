@@ -94,7 +94,7 @@ class MessageBubble extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(
                   bottom: 4,
-                  right: !byMe ? 26 : 46,
+                  right: 26,
                 ),
                 child: SelectableText(message.text),
               ),

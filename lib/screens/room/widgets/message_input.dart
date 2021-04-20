@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import 'package:nane_client/models/data/message.dart';
@@ -15,10 +16,22 @@ class MessageInput extends HookWidget {
   Widget build(BuildContext context) {
     final controller = useTextEditingController();
     final isButtonActive = useState<bool>(false);
-    String previousText = usePrevious<String>('') ?? '';
+    String previousText = usePrevious<String>(controller.text) ?? '';
+
+    final isConnected = context.select((ChatProvider chat) => chat.isConnected);
 
     void sendMessage() {
       if (controller.text.trim().isEmpty) return;
+
+      if (!isConnected) {
+        showToast(
+          'Нет соединения с сервером\nПожалуйста, попробуйте снова',
+          dismissOtherToast: true,
+          position: ToastPosition.top,
+          backgroundColor: Colors.black87,
+        );
+        return;
+      }
 
       final message = Message(
         room: room.name,

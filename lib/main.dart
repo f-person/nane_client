@@ -1,5 +1,6 @@
 import 'package:catcher/catcher.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import 'constants/colors.dart';
@@ -54,14 +55,16 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         final user = context.select((UserProvider user) => user.user);
 
-        return MaterialApp(
-          title: 'Nane Chat',
-          navigatorKey: Catcher.navigatorKey,
-          theme: ThemeData(
-            primaryColor: AppColors.primary,
-            accentColor: AppColors.accent,
+        return OKToast(
+          child: MaterialApp(
+            title: 'Nane Chat',
+            navigatorKey: Catcher.navigatorKey,
+            theme: ThemeData(
+              primaryColor: AppColors.primary,
+              accentColor: AppColors.accent,
+            ),
+            home: user == null ? AuthScreen() : RoomsScreen(),
           ),
-          home: user == null ? AuthScreen() : RoomsScreen(),
         );
       },
     );

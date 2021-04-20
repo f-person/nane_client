@@ -13,14 +13,30 @@ import 'package:nane_client/models/response/get_room_messages_response.dart';
 import 'package:nane_client/models/response/get_rooms_response.dart';
 
 class ChatProvider extends ProviderModel with ChangeNotifier {
+  ChatProvider() {
+    Timer.periodic(
+      const Duration(milliseconds: 1000),
+      (timer) {
+        if (_channel == null) _connect();
+      },
+    );
+  }
+
   WebSocketChannel? _channel;
   StreamSubscription<dynamic>? _subscription;
+  bool _isConnected = false;
 
   String? _username;
 
-  DateTime? _lastConnectAttempt;
   List<Room> _rooms = [];
   final Map<String, List<Message>> _messages = {};
+
+  bool get isConnected => _isConnected;
+
+  void _setConnected(bool value) {
+    _isConnected = value;
+    notifyListeners();
+  }
 
   List<Room> get rooms {
     final roomsCopy = [..._rooms];
@@ -32,6 +48,7 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
   }
 
   void closeConnection() {
+    _setConnected(false);
     _subscription?.cancel();
     _channel?.sink.close();
     _channel = null;
@@ -70,13 +87,10 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
   }
 
   Future<void> _connect() async {
-    final now = DateTime.now();
+    if (_channel != null) return;
 
-    if (_lastConnectAttempt != null &&
-        now.difference(_lastConnectAttempt!) <
-            const Duration(milliseconds: 100)) {
-      await Future.delayed(const Duration(milliseconds: 200));
-    }
+    final now = DateTime.now();
+    print('conencting $now');
 
     _channel = WebSocketChannel.connect(
       Uri.parse('${SettingConstants.webSocketUrl}?username=$_username'),
@@ -103,6 +117,7 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
         _messages[message.room]!.add(message);
         notifyListeners();
       }
-    }, onDone: _connect, onError: (_) => _connect());
+    }, onDone: closeConnection, onError: (_) => closeConnection());
+    _setConnected(true);
   }
 }
