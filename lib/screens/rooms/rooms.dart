@@ -14,15 +14,22 @@ class RoomsScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final isLoading = useState<bool>(true);
+    final failedToFetch = useState<bool>(false);
+
+    Future<void> fetchRooms() async {
+      isLoading.value = true;
+      try {
+        await context.read<ChatProvider>().fetchRooms();
+        if (failedToFetch.value) failedToFetch.value = false;
+      } catch (_) {
+        failedToFetch.value = true;
+      } finally {
+        isLoading.value = false;
+      }
+    }
 
     useEffect(() {
-      WidgetsBinding.instance!.addPostFrameCallback((_) async {
-        try {
-          await context.read<ChatProvider>().fetchRooms();
-        } finally {
-          isLoading.value = false;
-        }
-      });
+      WidgetsBinding.instance!.addPostFrameCallback((_) => fetchRooms());
 
       return () {};
     }, const []);
@@ -30,6 +37,24 @@ class RoomsScreen extends HookWidget {
     final rooms = context.select((ChatProvider chat) => chat.rooms);
 
     Widget buildBody() {
+      if (isLoading.value) {
+        print('loading');
+        return Center(child: CircularProgressIndicator());
+      }
+
+      if (failedToFetch.value) {
+        return Center(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text('Произошла ошибка при загрузке комнат'),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: fetchRooms,
+              child: Text('Попробовать снова'),
+            ),
+          ]),
+        );
+      }
+
       if (rooms.isNotEmpty) {
         return ListView.builder(
           itemCount: rooms.length,
@@ -37,9 +62,6 @@ class RoomsScreen extends HookWidget {
             return RoomTile(room: rooms[index]);
           },
         );
-      }
-      if (isLoading.value) {
-        return Center(child: CircularProgressIndicator());
       }
 
       return Center(child: Text('В этой коробке игрушек чатов не нашлось'));
