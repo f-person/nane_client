@@ -5,12 +5,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import 'package:nane_client/constants/setting.dart';
 import 'package:nane_client/models/data/message.dart';
 import 'package:nane_client/models/data/room.dart';
 import 'package:nane_client/models/provider.dart';
 import 'package:nane_client/models/response/get_room_messages_response.dart';
 import 'package:nane_client/models/response/get_rooms_response.dart';
+import 'package:nane_client/utils/uri.dart';
 
 class ChatProvider extends ProviderModel with ChangeNotifier {
   ChatProvider() {
@@ -87,14 +87,12 @@ class ChatProvider extends ProviderModel with ChangeNotifier {
   }
 
   Future<void> _connect() async {
-    if (_channel != null) return;
+    if (_channel != null || _username == null) return;
 
     final now = DateTime.now();
     print('conencting $now');
 
-    _channel = WebSocketChannel.connect(
-      Uri.parse('${SettingConstants.webSocketUrl}?username=$_username'),
-    );
+    _channel = WebSocketChannel.connect(getWebSocketUri(username: _username!));
     _listen();
   }
 
